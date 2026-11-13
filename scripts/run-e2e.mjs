@@ -4,8 +4,8 @@ import {join} from 'node:path';
 import {pnpm,run} from './process.mjs';
 const useDocker=!process.env.XECMS_TEST_DATABASE_URL;
 const project=`xecms-builder-${process.pid}`;
-const databasePort=process.env.XECMS_E2E_POSTGRES_PORT??String(46000+process.pid%1000);
-const databaseUrl=process.env.XECMS_TEST_DATABASE_URL??`postgresql://xecms:xecms@127.0.0.1:${databasePort}/xecms_e2e`;
+const databasePort = process.env.XECMS_E2E_POSTGRES_PORT ?? '0';
+let databaseUrl = process.env.XECMS_TEST_DATABASE_URL ?? `postgresql://xecms:xecms@127.0.0.1:${databasePort}/xecms_e2e`;
 const serverPort=String(34000+process.pid%1000),origin=`http://127.0.0.1:${serverPort}`;
 const media=await mkdtemp(join(tmpdir(),'xecms-builder-e2e-'));
 const schemas=[];
@@ -13,7 +13,20 @@ const env={...process.env,NODE_ENV:'test',DATABASE_URL:databaseUrl,XECMS_TEST_DA
 let started=false;
 try{
  await run(pnpm,['build'],{env:{...env,NODE_ENV:'production'}});
- if(useDocker){started=true;await run('docker',['compose','--project-name',project,'--profile','e2e','up','--detach','--wait','postgres-e2e'],{env});}
+ if (useDocker) {
+  started = true;
+  await run('docker', ['compose', '--project-name', project, '--profile', 'e2e', 'up', '--detach', '--wait', 'postgres-e2e'], {env});
+  const publishedAddress = await run('docker', ['compose', '--project-name', project, '--profile', 'e2e', 'port', 'postgres-e2e', '5432'], {env, capture: true});
+  const publishedPort = publishedAddress.trim().split(/\r?\n/)[0]?.match(/:(\d+)$/)?.[1];
+  if (!publishedPort || Number(publishedPort) < 1 || Number(publishedPort) > 65535) {
+   throw new Error(`Docker did not report a valid PostgreSQL test port: ${JSON.stringify(publishedAddress.trim())}`);
+  }
+  databaseUrl = `postgresql://xecms:xecms@127.0.0.1:${publishedPort}/xecms_e2e`;
+  env.DATABASE_URL = databaseUrl;
+  env.XECMS_TEST_DATABASE_URL = databaseUrl;
+  env.XECMS_E2E_DATABASE_URL = databaseUrl;
+  console.log(`PostgreSQL test database listening on 127.0.0.1:${publishedPort}`);
+ }
  await run(pnpm,['test:database'],{env});
  for(const suite of ['admin-app-blocks','admin-apps']){
   const schema=`xecms_builder_${suite.replaceAll('-','_')}_${process.pid}_${Date.now()}`;schemas.push(schema);
