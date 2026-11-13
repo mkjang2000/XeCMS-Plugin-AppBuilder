@@ -1,0 +1,15 @@
+node_modules/
+dist/
+dist-types/
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+.xecms/
+.engine-artifacts/
+.engine-artifacts-*/
+.engine-source/
+.pnpmfile.cjs
+pnpm-lock.yaml
+playwright-report/
+test-results/

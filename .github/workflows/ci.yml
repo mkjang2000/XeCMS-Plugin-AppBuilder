@@ -1,0 +1,36 @@
+name: App Builder CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.30.1
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22.22.0
+      # Until engine 0.6.0 is published, build its pinned public source into
+      # local validated tarballs. No workspace links or registry writes.
+      - run: pnpm bootstrap
+      - run: pnpm audit --audit-level=high
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm verify
+      - run: pnpm release:pack --output dist/releases/0.6.0
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: builder-validation
+          path: |
+            dist/releases/
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore

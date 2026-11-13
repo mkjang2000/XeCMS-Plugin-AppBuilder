@@ -1,0 +1,38 @@
+{
+  "name": "xecms-plugin-appbuilder",
+  "version": "0.6.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@10.30.1",
+  "engines": {
+    "node": ">=22.22.0"
+  },
+  "scripts": {
+    "bootstrap": "node scripts/bootstrap-engine.mjs",
+    "clean": "node scripts/clean.mjs",
+    "build:packages": "tsc -b",
+    "build": "pnpm build:packages && pnpm --filter @xecms/app-builder-admin build",
+    "typecheck": "tsc -b --pretty false",
+    "check:boundaries": "node scripts/check-boundaries.mjs",
+    "test": "vitest run",
+    "test:database": "node scripts/run-database-tests.mjs",
+    "check": "pnpm check:boundaries && pnpm typecheck && pnpm test",
+    "dev": "pnpm build && node scripts/dev.mjs",
+    "start": "NODE_ENV=production node scripts/server.mjs",
+    "test:e2e": "node scripts/run-e2e.mjs",
+    "verify": "pnpm clean && pnpm check && pnpm test:e2e",
+    "release:pack": "node scripts/pack-release.mjs"
+  },
+  "devDependencies": {
+    "@xecms/server": "0.6.0",
+    "@xecms/database": "0.6.0",
+    "@xecms/admin-app": "0.6.0",
+    "@xecms/app-builder-server": "workspace:*",
+    "@types/node": "22.20.1",
+    "typescript": "7.0.2",
+    "vitest": "4.1.10",
+    "@playwright/test": "1.62.1",
+    "vite": "8.2.4"
+  }
+}

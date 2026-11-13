@@ -1,0 +1,52 @@
+{
+  "name": "@xecms/app-builder-server",
+  "version": "0.6.0",
+  "description": "Optional XeCMS business screen builder server extension.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.22.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "!dist/**/*.test.*",
+    "!dist/**/*.integration.test.*",
+    "!dist/test-support.*",
+    "!dist/.tsbuildinfo"
+  ],
+  "dependencies": {
+    "@xecms/admin-apps": "workspace:*",
+    "@xecms/app-builder-admin": "workspace:*",
+    "@xecms/app-builder-client": "workspace:*",
+    "@xecms/application": "0.6.0",
+    "@xecms/contracts": "0.6.0",
+    "@xecms/database": "0.6.0",
+    "@xecms/schema": "0.6.0",
+    "@xecms/server": "0.6.0",
+    "fastify": "5.12.5",
+    "pg": "8.23.0"
+  },
+  "devDependencies": {
+    "@types/pg": "8.21.0",
+    "vitest": "4.1.10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mkjang2000/XeCMS-Plugin-AppBuilder.git",
+    "directory": "packages/server"
+  },
+  "homepage": "https://github.com/mkjang2000/XeCMS-Plugin-AppBuilder#readme",
+  "bugs": {
+    "url": "https://github.com/mkjang2000/XeCMS-Plugin-AppBuilder/issues"
+  }
+}

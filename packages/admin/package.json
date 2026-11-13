@@ -1,0 +1,52 @@
+{
+  "name": "@xecms/app-builder-admin",
+  "version": "0.6.0",
+  "description": "Optional XeCMS App Builder Studio and runtime bundle.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mkjang2000/XeCMS-Plugin-AppBuilder.git",
+    "directory": "packages/admin"
+  },
+  "homepage": "https://github.com/mkjang2000/XeCMS-Plugin-AppBuilder#readme",
+  "bugs": {
+    "url": "https://github.com/mkjang2000/XeCMS-Plugin-AppBuilder/issues"
+  },
+  "engines": {
+    "node": ">=22.22.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 4173"
+  },
+  "devDependencies": {
+    "@xecms/admin": "0.6.0",
+    "@xecms/admin-apps": "workspace:*",
+    "@xecms/admin-runtime": "workspace:*",
+    "@xecms/schema": "0.6.0",
+    "@xecms/ui": "0.6.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-router": "8.3.0",
+    "@xecms/app-builder-client": "workspace:*",
+    "@testing-library/react": "16.3.2",
+    "@testing-library/user-event": "14.6.3",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.4",
+    "@vitejs/plugin-react": "6.0.5",
+    "jsdom": "26.1.0",
+    "vite": "8.2.4"
+  },
+  "exports": {
+    "./package.json": "./package.json"
+  }
+}

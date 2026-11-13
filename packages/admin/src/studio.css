@@ -1,0 +1,5 @@
+body { margin: 0; }
+.builder-studio { min-height: 100vh; background: var(--xecms-color-background, #f7f8fa); }
+.builder-studio-header { display: flex; justify-content: space-between; gap: 24px; padding: 18px 28px; border-bottom: 1px solid #dce1e8; background: #fff; }
+.builder-studio-header a { color: #243550; text-decoration: none; font-weight: 600; }
+.builder-studio-main { padding: 28px; max-width: 1440px; margin: 0 auto; }
