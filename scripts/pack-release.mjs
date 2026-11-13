@@ -27,7 +27,7 @@ try{
   for(const entry of strings(manifest.exports))await access(join(directory,entry));
   await access(join(directory,'dist',name==='admin'?'index.html':name==='runtime'?'index.js':'index.js'));
   const packed=JSON.parse(await run(process.platform==='win32'?'npm.cmd':'npm',['pack','--ignore-scripts','--json','--pack-destination',output],{cwd:directory,capture:true}))[0];
-  for(const file of packed.files)assert.ok(!/(\.pnpmfile|\.engine-|node_modules|\.tsbuildinfo|\.(?:test|spec)\.|test-support\.)/.test(file.path),`Internal packed file: ${file.path}`);
+  for(const file of packed.files)assert.ok(!/(\.pnpmfile|\.engine-|node_modules|\.tsbuildinfo|\.(?:test|spec)\.|(?:^|\/)(?:[^\/]*-)?test-(?:support|fixtures?)(?:[.\/_-]|$))/.test(file.path),`Internal packed file: ${file.path}`);
   const bytes=await readFile(join(output,packed.filename));artifacts.push({name:manifest.name,version:manifest.version,filename:packed.filename,sha512:createHash('sha512').update(bytes).digest('hex'),dependencies:manifest.dependencies??{}});
   console.log(`Prepared ${packed.filename}`);
  }

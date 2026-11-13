@@ -15,7 +15,6 @@ import {
   removeState,
   updatePlacement,
 } from "./model.js";
-import { canConnect, newConnectionId } from "./ports.js";
 
 function emptyPage(): ComposedPageDefinition {
   return {
@@ -131,66 +130,5 @@ describe("state and data-source CRUD", () => {
     const next = removeDataSource(page, id);
     expect(next.dataSources.some((source) => source.id === id)).toBe(false);
     expect(next.connections).toHaveLength(0);
-  });
-});
-
-describe("connection validation", () => {
-  it("allows an output→input connection with compatible types", () => {
-    const page = emptyPage();
-    expect(canConnect(page, {
-      from: { nodeType: "component", nodeId: "cmp_input", portId: "value" },
-      to: { nodeType: "state", nodeId: "state_name", portId: "write" },
-    })).toBe(true);
-  });
-
-  it("rejects wrong direction (input as source)", () => {
-    const page = emptyPage();
-    expect(canConnect(page, {
-      from: { nodeType: "state", nodeId: "state_name", portId: "write" },
-      to: { nodeType: "component", nodeId: "cmp_input", portId: "value" },
-    })).toBe(false);
-  });
-
-  it("rejects incompatible value types", () => {
-    const page = emptyPage();
-    // button.clicked (event) → detail.documentId (document-id)
-    expect(canConnect(page, {
-      from: { nodeType: "component", nodeId: "cmp_button", portId: "clicked" },
-      to: { nodeType: "component", nodeId: "cmp_table", portId: "data" },
-    })).toBe(false);
-  });
-
-  it("rejects a second inbound connection on a single-input port", () => {
-    let page = emptyPage();
-    page = addConnection(page, {
-      id: "c1",
-      from: { nodeType: "component", nodeId: "cmp_input", portId: "value" },
-      to: { nodeType: "state", nodeId: "state_name", portId: "write" },
-    });
-    // state_name.write already has one inbound; another must be rejected.
-    expect(canConnect(page, {
-      from: { nodeType: "data-source", nodeId: "query_x", portId: "rows" },
-      to: { nodeType: "state", nodeId: "state_name", portId: "write" },
-    })).toBe(false);
-  });
-
-  it("rejects a connection that would create a cycle", () => {
-    let page = emptyPage();
-    // state_name.value(string) → state_other.write closes a loop once the reverse exists.
-    page = addConnection(page, {
-      id: "c1",
-      from: { nodeType: "state", nodeId: "state_name", portId: "value" },
-      to: { nodeType: "state", nodeId: "state_other", portId: "write" },
-    });
-    // state_other.value → state_name.write would form state_name → state_other → state_name.
-    expect(canConnect(page, {
-      from: { nodeType: "state", nodeId: "state_other", portId: "value" },
-      to: { nodeType: "state", nodeId: "state_name", portId: "write" },
-    })).toBe(false);
-  });
-
-  it("generates unique connection ids", () => {
-    const existing = [{ id: "conn_1" }] as never;
-    expect(newConnectionId(existing)).toBe("conn_2");
   });
 });

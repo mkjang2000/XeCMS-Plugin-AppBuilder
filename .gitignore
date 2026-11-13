@@ -13,3 +13,11 @@ dist-types/
 pnpm-lock.yaml
 playwright-report/
 test-results/
+coverage/
+.cache/
+.vite/
+.vitest/
+*.log
+.DS_Store
+Thumbs.db
+.npmrc

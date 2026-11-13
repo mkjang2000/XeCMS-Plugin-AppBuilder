@@ -21,7 +21,9 @@ scripts/    engine bootstrap, build hygiene, standalone host and verification
 tests/e2e/  preserved builder browser journeys and bootstrap fixture
 .github/workflows/ci.yml
 engine-source.json  pinned engine source fallback for prerelease bootstrap
-tsconfig*.json / vitest.config.ts / playwright.config.ts
+tsconfig.json  shared compiler options and package build references
+packages/*/tsconfig.json  independent package output and JSX/Vite settings
+vitest.config.ts / playwright.config.ts
 docker-compose.yml
 ```
 
@@ -31,3 +33,9 @@ The engine package supplies CMS Studio and core APIs; this repository never impo
 
 ## Generated local state
 .engine-artifacts/, .engine-source/, .pnpmfile.cjs and pnpm-lock.yaml are ignored during prerelease bootstrap. Build output and node_modules are not source. Package tarballs retain exact engine versions and never include local overrides. Development plans and reviews are maintained separately in the private XeCMS-Docs repository.
+
+`pnpm clean` removes package `dist`/`dist-types` and root/package `coverage`, `playwright-report`,
+`test-results`, `.cache`, `.vite`, `.vitest`, including those three caches inside each
+`node_modules`. It preserves root release artifacts,
+engine bootstrap state, `node_modules`, `.env`, and `.xecms`. Rebuild with `pnpm build`
+before running or packing. Source tests remain part of type checking and verification.

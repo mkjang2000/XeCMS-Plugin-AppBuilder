@@ -21,6 +21,9 @@ XeCMS 엔진 위에서 동작하는 **선택 업무 화면 빌더**입니다. �
 엔진의 공개 패키지 API만 사용하며, 엔진 소스 경로·workspace 링크에 의존하지 않습니다.
 구조는 [Project_tree.md](./Project_tree.md)를 참고하세요.
 
+공통 TypeScript 옵션과 전체 빌드 순서는 루트 `tsconfig.json`에서 관리합니다.
+패키지별 `tsconfig.json`은 독립 배포에 필요한 출력 경로·참조와 JSX/Vite 설정만 구분합니다.
+
 ## 설치 준비: 아직 게시되지 않은 0.6.0
 
 Node.js 22.22 이상과 pnpm 10.30.1이 필요합니다. **엔진과 빌더 0.6.0은 npm에 아직
@@ -85,6 +88,10 @@ pnpm exec playwright install chromium
 pnpm verify                        # clean·check·build·DB·두 브라우저 여정
 pnpm release:pack --output dist/releases/0.6.0
 ```
+
+`pnpm clean`은 각 패키지의 `dist`·`dist-types`와 저장소·패키지의 테스트 보고서·coverage·캐시를
+제거합니다. `node_modules`에서는 `.cache`·`.vite`·`.vitest` 캐시만 제거합니다. 이후 `pnpm build` 또는 `pnpm dev`로 다시 빌드하세요. `dist/releases/`,
+엔진 bootstrap 파일·의존성 설치, `.env`와 `.xecms`의 로컬 데이터는 보존합니다.
 
 DB/E2E 검증은 기본적으로 별도 Docker 프로젝트와 임시 PostgreSQL을 사용합니다.
 이미 격리된 DB가 있으면 `XECMS_TEST_DATABASE_URL`로 지정할 수 있습니다.

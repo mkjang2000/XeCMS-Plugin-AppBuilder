@@ -29,7 +29,7 @@ if(!artifacts){
   }
   await run(pnpm,['install','--frozen-lockfile',...(offline?['--offline']:[])],{cwd:source});
   await run(pnpm,['clean'],{cwd:source});
-  await run(pnpm,['build:all'],{cwd:source});
+  await run(pnpm,['build'],{cwd:source});
   temporaryOutput=await mkdtemp(join(tmpdir(),'xecms-builder-engine-pack-'));
   artifacts=join(temporaryOutput,'release');
   await run(pnpm,['release:pack','--output',artifacts],{cwd:source});
